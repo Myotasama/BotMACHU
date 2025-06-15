@@ -84,7 +84,7 @@ async def clear(interaction: discord.Interaction, amount: int):
         return
     await interaction.response.defer()
     deleted = await interaction.channel.purge(limit=amount+1)
-
+    await interaction.followup.send(f"{len(deleted)} deleted")
 server_on()
 
 bot.run(os.getenv('TOKEN'))
