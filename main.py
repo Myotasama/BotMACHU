@@ -91,9 +91,7 @@ EMOJI = "✅"
 ROLE_NAME = "member"
 @bot.command()
 async def reactrole(ctx):
-    message = await ctx.send(""-------------------"
-                             "กด ✅ เพื่อเป็น member"
-                             "-------------------"")
+    message = await ctx.send("----------------- กด ✅ เพื่อเป็น member -----------------")
     await message.add_reaction(EMOJI)
 
     # เก็บ message ID เพื่อเช็กใน on_raw_reaction_add
