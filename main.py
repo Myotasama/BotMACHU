@@ -85,6 +85,35 @@ async def clear(interaction: discord.Interaction, amount: int):
     await interaction.response.defer()
     deleted = await interaction.channel.purge(limit=amount+1)
     await interaction.followup.send(f"{len(deleted)} deleted")
+    
+#role give
+EMOJI = "✅"
+ROLE_NAME = "member"
+@bot.command()
+async def reactrole(ctx):
+    message = await ctx.send(""-------------------"
+                             "กด ✅ เพื่อเป็น member"
+                             "-------------------"")
+    await message.add_reaction(EMOJI)
+
+    # เก็บ message ID เพื่อเช็กใน on_raw_reaction_add
+    bot.react_message_id = message.id
+
+@bot.event
+async def on_raw_reaction_add(payload):
+    if payload.message_id != getattr(bot, 'react_message_id', None):
+        return
+
+    if str(payload.emoji.name) == EMOJI:
+        guild = bot.get_guild(payload.guild_id)
+        role = discord.utils.get(guild.roles, name=ROLE_NAME)
+        if role:
+            member = guild.get_member(payload.user_id)
+            if member and not member.bot:
+                await member.add_roles(role)
+                print(f"Gave {role.name} to {member.name}")
+
+
 server_on()
 
 bot.run(os.getenv('TOKEN'))
