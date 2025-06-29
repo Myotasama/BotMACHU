@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 from myserver import server_on
+import datetime
 bot = commands.Bot(command_prefix='!', intents=discord.Intents.all())
 
 
@@ -110,6 +111,69 @@ async def on_raw_reaction_add(payload):
             if member and not member.bot:
                 await member.add_roles(role)
                 print(f"Gave {role.name} to {member.name}")
+
+#help command
+@bot.tree.command(name="help", description="bot command")
+async def helpcommand(interaction):
+    embed1 = discord.Embed(title = "Bot Commands",    description="",
+                           color = 0x886bbf,
+                           timestamp=discord.utils.utcnow())
+    embed1.add_field(name='/clear',value='clear message', inline=False)
+
+    await  interaction.response.send_message(embed = embed1)
+
+
+#log voice chat
+vc_entry_time = {}
+
+@bot.event
+async def on_voice_state_update(member, before, after):
+    log_channel = bot.get_channel(1388826937375457322)
+
+    # เข้าห้อง
+    if before.channel is None and after.channel is not None:
+        vc_entry_time[member.id] = datetime.datetime.now()
+
+        embed = discord.Embed(
+            title="🎧 เข้าห้อง Voice",
+            description=f"{member.mention} เข้าห้อง **{after.channel.name}**",
+            color=discord.Color.green()
+        )
+        embed.set_footer(text=f"เวลา: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        await log_channel.send(embed=embed)
+
+    # ออกจากห้อง
+    elif before.channel is not None and after.channel is None:
+        join_time = vc_entry_time.pop(member.id, None)
+        now = datetime.datetime.now()
+
+        duration = ""
+        if join_time:
+            time_spent = now - join_time
+            minutes = round(time_spent.total_seconds() / 60, 2)
+            duration = f"{minutes} นาที"
+
+        embed = discord.Embed(
+            title="👋 ออกจาก Voice",
+            description=f"{member.mention} ออกจากห้อง **{before.channel.name}**\n🕒 อยู่ในห้อง **{duration}**",
+            color=discord.Color.red()
+        )
+        embed.set_footer(text=f"เวลา: {now.strftime('%Y-%m-%d %H:%M:%S')}")
+        await log_channel.send(embed=embed)
+
+    # ย้ายห้อง
+    elif before.channel != after.channel:
+        # อัปเดตเวลาย้ายห้อง
+        vc_entry_time[member.id] = datetime.datetime.now()
+        embed = discord.Embed(
+            title="🔄 ย้ายห้อง Voice",
+            description=f"{member.mention} ย้ายจาก **{before.channel.name}** ไปยัง **{after.channel.name}**",
+            color=discord.Color.blurple()
+        )
+        embed.set_footer(text=f"เวลา: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        await log_channel.send(embed=embed)
+
+
 
 
 server_on()
