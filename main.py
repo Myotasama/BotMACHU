@@ -133,8 +133,8 @@ async def on_voice_state_update(member, before, after):
     # เข้าห้อง
     if before.channel is None and after.channel is not None:
         embed = discord.Embed(
-            title="🎧 เข้าห้อง Voice",
-            description=f"{member.mention} เข้าห้อง **{after.channel.name}**  ",
+            title=f"🎧 ได้เข้าห้อง **{after.channel.name}**",
+            description=f"Machu -- {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ",
             color=discord.Color.green()
         )
         embed.set_author(
@@ -155,8 +155,8 @@ async def on_voice_state_update(member, before, after):
             duration = f"{minutes} นาที"
 
         embed = discord.Embed(
-            title="👋 ออกจาก Voice",
-            description=f"{member.mention} ออกจากห้อง **{before.channel.name}**(🕒 อยู่ในห้อง **{duration}**) ",
+            title=f"👋 ได้ออกจาก **{before.channel.name}**(🕒 อยู่ในห้อง **{duration}**)",
+            description=f"Machu -- {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ",
             color=discord.Color.red()
         )
         embed.set_author(
@@ -169,8 +169,8 @@ async def on_voice_state_update(member, before, after):
         # อัปเดตเวลาย้ายห้อง
         vc_entry_time[member.id] = datetime.datetime.now()
         embed = discord.Embed(
-            title="🔄 ย้ายห้อง Voice",
-            description=f"{member.mention} ย้ายจาก **{before.channel.name}** ไปยัง **{after.channel.name}** ",
+            title=f"🔄 ย้ายห้องจาก  **{before.channel.name}** ไปยัง **{after.channel.name}**",
+            description=f"Machu -- {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ",
             color=discord.Color.blurple()
         )
         embed.set_author(
