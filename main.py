@@ -132,19 +132,15 @@ async def on_voice_state_update(member, before, after):
 
     # เข้าห้อง
     if before.channel is None and after.channel is not None:
-        vc_entry_time[member.id] = datetime.datetime.now()
-        ber.default_avatar.url
-
         embed = discord.Embed(
             title="🎧 เข้าห้อง Voice",
-            description=f"{member.mention} เข้าห้อง **{after.channel.name}**",
+            description=f"{member.mention} เข้าห้อง **{after.channel.name}** (เวลา: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}) ",
             color=discord.Color.green()
         )
         embed.set_author(
             name=member.display_name,
             icon_url=member.avatar.url if member.avatar else member.default_avatar.url)
-            
-        embed.set_footer(text=f"เวลา: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+
         await log_channel.send(embed=embed)
 
     # ออกจากห้อง
@@ -160,13 +156,12 @@ async def on_voice_state_update(member, before, after):
 
         embed = discord.Embed(
             title="👋 ออกจาก Voice",
-            description=f"{member.mention} ออกจากห้อง **{before.channel.name}**\n🕒 อยู่ในห้อง **{duration}**",
+            description=f"{member.mention} ออกจากห้อง **{before.channel.name}**\n🕒 อยู่ในห้อง **{duration}** (เวลา: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')})",
             color=discord.Color.red()
         )
         embed.set_author(
             name=member.display_name,
             icon_url=member.avatar.url if member.avatar else member.default_avatar.url)
-        embed.set_footer(text=f"เวลา: {now.strftime('%Y-%m-%d %H:%M:%S')}")
         await log_channel.send(embed=embed)
 
     # ย้ายห้อง
@@ -175,14 +170,16 @@ async def on_voice_state_update(member, before, after):
         vc_entry_time[member.id] = datetime.datetime.now()
         embed = discord.Embed(
             title="🔄 ย้ายห้อง Voice",
-            description=f"{member.mention} ย้ายจาก **{before.channel.name}** ไปยัง **{after.channel.name}**",
+            description=f"{member.mention} ย้ายจาก **{before.channel.name}** ไปยัง **{after.channel.name}** (เวลา: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')})",
             color=discord.Color.blurple()
         )
         embed.set_author(
             name=member.display_name,
             icon_url=member.avatar.url if member.avatar else member.default_avatar.url)
-        embed.set_footer(text=f"เวลา: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         await log_channel.send(embed=embed)
+
+
+
 
 
 
