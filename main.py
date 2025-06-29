@@ -10,7 +10,6 @@ bot = commands.Bot(command_prefix='!', intents=discord.Intents.all())
 
 
 
-
 @bot.event
 async def on_ready():
     print("Bot online!")
@@ -86,7 +85,7 @@ async def clear(interaction: discord.Interaction, amount: int):
     await interaction.response.defer()
     deleted = await interaction.channel.purge(limit=amount+1)
     await interaction.followup.send(f"{len(deleted)} deleted")
-    
+
 #role give
 EMOJI = "✅"
 ROLE_NAME = "member"
@@ -133,16 +132,16 @@ async def on_voice_state_update(member, before, after):
     # เข้าห้อง
     if before.channel is None and after.channel is not None:
          vc_entry_time[member.id] = datetime.datetime.now()
-         embed = discord.Embed(
+         embed2 = discord.Embed(
             title=f"🎧 ได้เข้าห้อง **{after.channel.name}**",
             description=f"Machu -- {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ",
             color=discord.Color.green()
-        )
-        embed.set_author(
+         )
+         embed2.set_author(
             name=member.display_name,
             icon_url=member.avatar.url if member.avatar else member.default_avatar.url)
 
-        await log_channel.send(embed=embed)
+         await log_channel.send(embed=embed2)
 
     # ออกจากห้อง
     elif before.channel is not None and after.channel is None:
@@ -154,30 +153,29 @@ async def on_voice_state_update(member, before, after):
             time_spent = now - join_time
             duration = str(time_spent).split('.')[0]  # เอาแค่ HH:MM:SS ตัด microseconds
 
-        embed = discord.Embed(
+        embed2 = discord.Embed(
             title=f"👋 ได้ออกจาก **{before.channel.name}**(🕒 อยู่ในห้อง **{duration}**)",
             description=f"Machu -- {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ",
             color=discord.Color.red()
         )
-        embed.set_author(
+        embed2.set_author(
             name=member.display_name,
             icon_url=member.avatar.url if member.avatar else member.default_avatar.url)
-        await log_channel.send(embed=embed)
+        await log_channel.send(embed=embed2)
 
     # ย้ายห้อง
     elif before.channel != after.channel:
         # อัปเดตเวลาย้ายห้อง
         vc_entry_time[member.id] = datetime.datetime.now()
-        embed = discord.Embed(
+        embed2 = discord.Embed(
             title=f"🔄 ย้ายห้องจาก  **{before.channel.name}** ไปยัง **{after.channel.name}**",
             description=f"Machu -- {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ",
             color=discord.Color.blurple()
         )
-        embed.set_author(
+        embed2.set_author(
             name=member.display_name,
             icon_url=member.avatar.url if member.avatar else member.default_avatar.url)
-        await log_channel.send(embed=embed)
-
+        await log_channel.send(embed=embed2)
 
 
 
