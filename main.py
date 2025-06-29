@@ -151,8 +151,7 @@ async def on_voice_state_update(member, before, after):
         duration = ""
         if join_time:
             time_spent = now - join_time
-            minutes = round(time_spent.total_seconds() / 60, 2)
-            duration = f"{minutes} นาที"
+            duration = str(time_spent).split('.')[0]  # เอาแค่ HH:MM:SS ตัด microseconds
 
         embed = discord.Embed(
             title=f"👋 ได้ออกจาก **{before.channel.name}**(🕒 อยู่ในห้อง **{duration}**)",
