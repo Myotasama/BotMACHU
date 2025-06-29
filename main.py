@@ -132,6 +132,7 @@ async def on_voice_state_update(member, before, after):
 
     # เข้าห้อง
     if before.channel is None and after.channel is not None:
+    vc_entry_time[member.id] = datetime.datetime.now()
         embed = discord.Embed(
             title=f"🎧 ได้เข้าห้อง **{after.channel.name}**",
             description=f"Machu -- {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ",
