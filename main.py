@@ -4,6 +4,7 @@ from discord.ext import commands
 from discord import app_commands
 from myserver import server_on
 import datetime
+import json
 bot = commands.Bot(command_prefix='!', intents=discord.Intents.all())
 
 
@@ -123,7 +124,25 @@ async def helpcommand(interaction):
 
 
 #log voice chat
+
+
+# Load data
+VC_DATA_FILE = "vc_data.json"
+
+def load_vc_data():
+    if not os.path.exists(VC_DATA_FILE):
+        return {}
+    with open(VC_DATA_FILE, "r") as f:
+        return json.load(f)
+
+def save_vc_data(data):
+    with open(VC_DATA_FILE, "w") as f:
+        json.dump(data, f)
+
+
 vc_entry_time = {}
+
+
 
 @bot.event
 async def on_voice_state_update(member, before, after):
@@ -149,9 +168,14 @@ async def on_voice_state_update(member, before, after):
         now = datetime.datetime.now()
 
         duration = ""
+
+        user_id = str(member.id)
+        vc_data = load_vc_data()
+
         if join_time:
-            time_spent = now - join_time
-            duration = str(time_spent).split('.')[0]  # เอาแค่ HH:MM:SS ตัด microseconds
+            spent_sec = int((now - join_time).total_seconds())
+            vc_data[user_id] = vc_data.get(user_id, 0) + spent_sec
+            save_vc_data(vc_data)  # เอาแค่ HH:MM:SS ตัด microseconds + save data
 
         embed2 = discord.Embed(
             title=f"👋 ได้ออกจาก **{before.channel.name}**(🕒 อยู่ในห้อง **{duration}**)",
@@ -176,6 +200,27 @@ async def on_voice_state_update(member, before, after):
             name=member.display_name,
             icon_url=member.avatar.url if member.avatar else member.default_avatar.url)
         await log_channel.send(embed=embed2)
+
+#vcstats
+@bot.tree.command(name="vcstats", description="ดูเวลาที่คุณใช้ใน VC ทั้งหมด")
+async def vcstats(interaction: discord.Interaction):
+    vc_data = load_vc_data()
+    user_id = str(interaction.user.id)
+    total_sec = vc_data.get(user_id, 0)
+
+    duration = str(datetime.timedelta(seconds=total_sec))
+
+    embed = discord.Embed(
+        title="📊 VC Statistics",
+        description=f"คุณใช้เวลาใน Voice Channel ไปแล้วทั้งหมด: **{duration}**",
+        color=discord.Color.blue()
+    )
+    embed.set_author(
+        name=interaction.user.display_name,
+        icon_url=interaction.user.avatar.url if interaction.user.avatar else interaction.user.default_avatar.url
+    )
+    await interaction.response.send_message(embed=embed)
+
 
 
 
