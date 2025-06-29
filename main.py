@@ -133,12 +133,17 @@ async def on_voice_state_update(member, before, after):
     # เข้าห้อง
     if before.channel is None and after.channel is not None:
         vc_entry_time[member.id] = datetime.datetime.now()
+        ber.default_avatar.url
 
         embed = discord.Embed(
             title="🎧 เข้าห้อง Voice",
             description=f"{member.mention} เข้าห้อง **{after.channel.name}**",
             color=discord.Color.green()
         )
+        embed.set_author(
+            name=member.display_name,
+            icon_url=member.avatar.url if member.avatar else member.default_avatar.url)
+            
         embed.set_footer(text=f"เวลา: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         await log_channel.send(embed=embed)
 
@@ -158,6 +163,9 @@ async def on_voice_state_update(member, before, after):
             description=f"{member.mention} ออกจากห้อง **{before.channel.name}**\n🕒 อยู่ในห้อง **{duration}**",
             color=discord.Color.red()
         )
+        embed.set_author(
+            name=member.display_name,
+            icon_url=member.avatar.url if member.avatar else member.default_avatar.url)
         embed.set_footer(text=f"เวลา: {now.strftime('%Y-%m-%d %H:%M:%S')}")
         await log_channel.send(embed=embed)
 
@@ -170,6 +178,9 @@ async def on_voice_state_update(member, before, after):
             description=f"{member.mention} ย้ายจาก **{before.channel.name}** ไปยัง **{after.channel.name}**",
             color=discord.Color.blurple()
         )
+        embed.set_author(
+            name=member.display_name,
+            icon_url=member.avatar.url if member.avatar else member.default_avatar.url)
         embed.set_footer(text=f"เวลา: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         await log_channel.send(embed=embed)
 
