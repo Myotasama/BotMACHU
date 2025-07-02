@@ -8,16 +8,12 @@ import json
 from itertools import cycle
 bot = commands.Bot(command_prefix='!', intents=discord.Intents.all())
 
+
 #botstatus
-status = cycle([
-    discord.Activity(type=discord.ActivityType.custom, name="KIRA KIRA"),
-    discord.Activity(type=discord.ActivityType.custom, name="💤 I'm sleepy"),
-    discord.Activity(type=discord.ActivityType.custom, name='ต้องได้เจอกันแน่ๆ "กันดั้มบอกแบบนั้น"'),
-])
+status = cycle(["KIRA KIRA" ,'ต้องได้เจอกันแน่ๆ "กันดั้มบอกแบบนั้น"'])
 @tasks.loop(seconds=5)
 async def botstatus():
-    await bot.change_presence(activity=next(status))
-
+    await bot.change_presence(activity=discord.Game(next(status)))
 
 @bot.event
 async def on_ready():
