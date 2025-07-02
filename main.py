@@ -84,6 +84,7 @@ async def  namecommand(interaction, name:str) :
 
 @bot.tree.command(name="clear", description="delete message ")
 @app_commands.describe(amount="type amount that you want to delete  (max 100)")
+@app_commands.checks.has_permissions(manage_messages=True) 
 async def clear(interaction: discord.Interaction, amount: int):
     if amount < 1 or amount > 100 :
         await interaction.response.send_message("only 1–100", ephemeral=True)
