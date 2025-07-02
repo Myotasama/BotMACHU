@@ -5,6 +5,7 @@ from discord import app_commands
 from myserver import server_on
 import datetime
 import json
+from itertools import cycle
 bot = commands.Bot(command_prefix='!', intents=discord.Intents.all())
 
 #botstatus
