@@ -9,7 +9,7 @@ from itertools import cycle
 bot = commands.Bot(command_prefix='!', intents=discord.Intents.all())
 
 #botstatus
-status = cycle(["KIRA KIRA" ," build by myota "])
+status = cycle(["KIRA KIRA" ,"ต้องได้เจอกันแน่ๆ "กันดั้มบอกแบบนั้น""])
 @tasks.loop(seconds=5)
 async def botstatus():
     await bot.change_presence(activity=discord.Game(next(status)))
@@ -124,7 +124,8 @@ async def helpcommand(interaction):
                            color = 0x886bbf,
                            timestamp=discord.utils.utcnow())
     embed1.add_field(name='/clear',value='clear message', inline=False)
-
+    embed1.add_field(name='/vcstats',value='check vc statics', inline=true)
+    embed1.add_field(name='/vcranking',value='vc leaderboard', inline=False)
     await  interaction.response.send_message(embed = embed1)
 
 
@@ -226,8 +227,29 @@ async def vcstats(interaction: discord.Interaction):
     )
     await interaction.response.send_message(embed=embed)
 
+#vcranking
+@bot.tree.command(name="vcranking", description="ดูอันดับคนที่อยู่ใน VC นานที่สุด")
+async def vcranking(interaction: discord.Interaction):
+    vc_data = load_vc_data()
 
+    if not vc_data:
+        await interaction.response.send_message("❌ ยังไม่มีข้อมูลการเข้า VC", ephemeral=True)
+        return
 
+    top_users = sorted(vc_data.items(), key=lambda x: x[1], reverse=True)[:10] # นำข้อมูลจาก vc_data (dict) มาจัดเรียงแบบ list , x[1] ค่าจำนวนวินาทีที่ใช้ใน VC ,reverse=True เรียงจากมากไปน้อย, [:10] เอาแค่ 10 อันดับแรก
+
+    lines = []
+    for i, (user_id, total_sec) in enumerate(top_users, start=1):
+        user = await interaction.guild.fetch_member(int(user_id)) #ดึงสมาชิก (Member object) จาก ID , ใช้ fetch_member() เพื่อให้ได้ user แม้จะไม่อยู่ในแคช
+        time_str = str(datetime.timedelta(seconds=total_sec))
+        lines.append(f"`#{i}` {user.display_name} — **{time_str}**")
+
+    embed = discord.Embed(
+        title="🏆 VC Leaderboard",
+        description="\n".join(lines),
+        color=discord.Color.gold()
+    )
+    await interaction.response.send_message(embed=embed)
 
 
 
