@@ -1,6 +1,6 @@
 import os
 import discord
-from discord.ext import commands, tasks
+from discord.ext import commands,tasks
 from discord import app_commands
 from myserver import server_on
 import datetime
@@ -8,7 +8,7 @@ import json
 bot = commands.Bot(command_prefix='!', intents=discord.Intents.all())
 
 #botstatus
-status = cycle(["KIRA KIRA"," build by myota "])
+status = cycle(["KIRA KIRA" ," build by myota "])
 @tasks.loop(seconds=5)
 async def botstatus():
     await bot.change_presence(activity=discord.Game(next(status)))
