@@ -124,8 +124,8 @@ async def helpcommand(interaction):
     embed1 = discord.Embed(title = "Bot Commands",    description="",
                            color = 0x886bbf,
                            timestamp=discord.utils.utcnow())
-    embed1.add_field(name='/clear',value='clear message', inline=False)
-    embed1.add_field(name='/vcstats',value='check vc statics')
+    embed1.add_field(name='/clear',value='clear message')
+    embed1.add_field(name='/vcstats',value='check vc statics',inline=False)
     embed1.add_field(name='/vcranking',value='vc leaderboard', inline=False)
     await  interaction.response.send_message(embed = embed1)
 
