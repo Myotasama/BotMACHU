@@ -125,8 +125,12 @@ async def helpcommand(interaction):
                            color = 0x886bbf,
                            timestamp=discord.utils.utcnow())
     embed1.add_field(name='/clear',value='clear message')
-    embed1.add_field(name='/vcstats',value='check vc statics',inline=False)
+    embed1.add_field(name='/vcstats',value='check vc statics')
     embed1.add_field(name='/vcranking',value='vc leaderboard')
+    embed1.add_field(name='/studylog_start',value='start record studytimes')
+    embed1.add_field(name='/studylog_stop',value='stop record studytimes')
+    embed1.add_field(name='/studylog_stats',value='check studytimes')
+    embed1.add_field(name='/studylog_reset',value='reset studytimes')
     await  interaction.response.send_message(embed = embed1)
 
 
@@ -300,7 +304,7 @@ async def studylog_stop(interaction: discord.Interaction):
 # ดูเวลาสะสม
 @bot.tree.command(name="studylog_stats", description="ดูเวลาที่คุณเคยเรียนทั้งหมด")
 async def studylog_stats(interaction: discord.Interaction):
-        if user_id in study_sessions:
+     if user_id in study_sessions:
         await interaction.response.send_message("⏳ คุณกำลังเรียนอยู่ โปรดใช้คำสั่งหลังเรียนเสร็จแล้ว!", ephemeral=True)
         return
     user_id = str(interaction.user.id)
@@ -323,7 +327,7 @@ async def studylog_stats(interaction: discord.Interaction):
 
 @bot.tree.command(name="studylog_reset", description="รีเซ็ตเวลาเรียนทั้งหมดของคุณ")
 async def studylog_reset(interaction: discord.Interaction):
-        if user_id in study_sessions:
+     if user_id in study_sessions:
         await interaction.response.send_message("⏳ คุณกำลังเรียนอยู่ โปรดใช้คำสั่งหลังเรียนเสร็จแล้ว!", ephemeral=True)
         return
     user_id = str(interaction.user.id)
