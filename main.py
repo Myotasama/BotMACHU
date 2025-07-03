@@ -300,6 +300,9 @@ async def studylog_stop(interaction: discord.Interaction):
 # ดูเวลาสะสม
 @bot.tree.command(name="studylog_stats", description="ดูเวลาที่คุณเคยเรียนทั้งหมด")
 async def studylog_stats(interaction: discord.Interaction):
+        if user_id in study_sessions:
+        await interaction.response.send_message("⏳ คุณกำลังเรียนอยู่ โปรดใช้คำสั่งหลังเรียนเสร็จแล้ว!", ephemeral=True)
+        return
     user_id = str(interaction.user.id)
     data = load_studylog()
     total_seconds = data.get(user_id, 0)
@@ -316,8 +319,13 @@ async def studylog_stats(interaction: discord.Interaction):
     )
 
     await interaction.response.send_message(embed=embed)
+
+
 @bot.tree.command(name="studylog_reset", description="รีเซ็ตเวลาเรียนทั้งหมดของคุณ")
 async def studylog_reset(interaction: discord.Interaction):
+        if user_id in study_sessions:
+        await interaction.response.send_message("⏳ คุณกำลังเรียนอยู่ โปรดใช้คำสั่งหลังเรียนเสร็จแล้ว!", ephemeral=True)
+        return
     user_id = str(interaction.user.id)
     data = load_studylog()
 
