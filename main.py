@@ -251,7 +251,71 @@ async def vcranking(interaction: discord.Interaction):
         color=discord.Color.gold()
     )
     await interaction.response.send_message(embed=embed)
+    
+studylog_file = "studylog.json"
+study_sessions = {}  # user_id: datetime when started
 
+# โหลดข้อมูล
+def load_studylog():
+    if not os.path.exists(studylog_file):
+        return {}
+    with open(studylog_file, "r") as f:
+        return json.load(f)
+
+# บันทึกข้อมูล
+def save_studylog(data):
+    with open(studylog_file, "w") as f:
+        json.dump(data, f)
+
+# เริ่มเรียน
+@bot.tree.command(name="studylog_start", description="เริ่มจับเวลาเรียน")
+async def studylog_start(interaction: discord.Interaction):
+    user_id = str(interaction.user.id)
+    if user_id in study_sessions:
+        await interaction.response.send_message("⏳ คุณกำลังเรียนอยู่แล้ว!", ephemeral=True)
+        return
+
+    study_sessions[user_id] = datetime.datetime.now()
+    await interaction.response.send_message("🟢 เริ่มจับเวลาเรียนแล้ว!")
+
+# หยุดจับเวลา
+@bot.tree.command(name="studylog_stop", description="หยุดและบันทึกเวลาเรียน")
+async def studylog_stop(interaction: discord.Interaction):
+    user_id = str(interaction.user.id)
+    if user_id not in study_sessions:
+        await interaction.response.send_message("❌ คุณยังไม่ได้เริ่มเรียน!", ephemeral=True)
+        return
+
+    start_time = study_sessions.pop(user_id)
+    end_time = datetime.datetime.now()
+    duration = (end_time - start_time).total_seconds()
+
+    data = load_studylog()
+    data[user_id] = data.get(user_id, 0) + int(duration)
+    save_studylog(data)
+
+    formatted = str(datetime.timedelta(seconds=int(duration)))
+    await interaction.response.send_message(f"✅ คุณเรียนไปทั้งหมด: `{formatted}`")
+
+# ดูเวลาสะสม
+@bot.tree.command(name="studylog_stats", description="ดูเวลาที่คุณเคยเรียนทั้งหมด")
+async def studylog_stats(interaction: discord.Interaction):
+    user_id = str(interaction.user.id)
+    data = load_studylog()
+    total_seconds = data.get(user_id, 0)
+    formatted = str(datetime.timedelta(seconds=total_seconds))
+
+    embed = discord.Embed(
+        title="📚 Study Summary",
+        description=f"คุณเรียนสะสมทั้งหมด: **{formatted}**",
+        color=discord.Color.green()
+    )
+    embed.set_author(
+        name=interaction.user.display_name,
+        icon_url=interaction.user.avatar.url if interaction.user.avatar else interaction.user.default_avatar.url
+    )
+
+    await interaction.response.send_message(embed=embed)
 
 
 
