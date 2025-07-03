@@ -327,11 +327,11 @@ async def studylog_stats(interaction: discord.Interaction):
 
 @bot.tree.command(name="studylog_reset", description="รีเซ็ตเวลาเรียนทั้งหมดของคุณ")
 async def studylog_reset(interaction: discord.Interaction):
-     if user_id in study_sessions:
-        await interaction.response.send_message("⏳ คุณกำลังเรียนอยู่ โปรดใช้คำสั่งหลังเรียนเสร็จแล้ว!", ephemeral=True)
-        return
     user_id = str(interaction.user.id)
     data = load_studylog()
+    if user_id in study_sessions:
+        await interaction.response.send_message("⏳ คุณกำลังเรียนอยู่ โปรดใช้คำสั่งหลังเรียนเสร็จแล้ว!", ephemeral=True)
+        return
 
     if user_id not in data:
         await interaction.response.send_message("❌ คุณยังไม่มีเวลาเรียนที่บันทึกไว้!", ephemeral=True)
