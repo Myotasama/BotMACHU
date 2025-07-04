@@ -45,6 +45,9 @@ async  def on_member_remove(member):
     emmbed = discord.Embed(title="---------", description=text2,
                            color=0x6d0707
                            )
+    emmbed.set_image(url=member.avatar.url if member.avatar else member.default_avatar.url)
+    emmbed.add_field(name="LEFT DATE", value=member.joined_at.strftime("%Y-%m-%d %H:%M:%S"), inline=False)
+
     await  channel.send(text)
     await  channel.send(embed=emmbed)
 
