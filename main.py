@@ -176,27 +176,25 @@ async def on_voice_state_update(member, before, after):
          await log_channel.send(embed=embed2)
 
     # ออกจากห้อง
-   elif before.channel is not None and after.channel is None:
-    join_time = vc_entry_time.pop(member.id, None)
-    now = datetime.datetime.now()
+     elif before.channel is not None and after.channel is None:
+          join_time = vc_entry_time.pop(member.id, None)
+          now = datetime.datetime.now()
 
-    user_id = str(member.id)
-    vc_data = load_vc_data()
+          user_id = str(member.id)
+          vc_data = load_vc_data()
 
-    if join_time:
-        spent_sec = int((now - join_time).total_seconds())
-        formatted_duration = str(datetime.timedelta(seconds=spent_sec))  # ✅ Fix here
-
-        vc_data[user_id] = vc_data.get(user_id, 0) + spent_sec
-        save_vc_data(vc_data)
-    else:
-        formatted_duration = "ไม่สามารถคำนวณได้"
-
-    embed2 = discord.Embed(
-        title=f"👋 ได้ออกจาก **{before.channel.name}** (🕒 อยู่ในห้อง **{formatted_duration}**)",
-        description=f"Machu -- {now.strftime('%Y-%m-%d %H:%M:%S')}",
-        color=discord.Color.red()
-    )
+          if join_time:
+              spent_sec = int((now - join_time).total_seconds())
+              formatted_duration = str(datetime.timedelta(seconds=spent_sec))  # ✅ Fix here
+              
+              vc_data[user_id] = vc_data.get(user_id, 0) + spent_sec
+              save_vc_data(vc_data)
+          else:
+              formatted_duration = "ไม่สามารถคำนวณได้"
+          embed2 = discord.Embed(
+              title=f"👋 ได้ออกจาก **{before.channel.name}** (🕒 อยู่ในห้อง **{formatted_duration}**)",  description=f"Machu -- {now.strftime('%Y-%m-%d %H:%M:%S')}",  color=discord.Color.red()
+          )
+         
     embed2.set_author(
         name=member.display_name,
         icon_url=member.avatar.url if member.avatar else member.default_avatar.url
