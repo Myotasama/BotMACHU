@@ -8,7 +8,6 @@ import json
 from itertools import cycle
 bot = commands.Bot(command_prefix='!', intents=discord.Intents.all())
 
-
 #botstatus
 status = cycle(["KIRA KIRA" ,'ต้องได้เจอกันแน่ๆ "กันดั้มบอกแบบนั้น"'])
 @tasks.loop(seconds=5)
@@ -181,8 +180,6 @@ async def on_voice_state_update(member, before, after):
         join_time = vc_entry_time.pop(member.id, None)
         now = datetime.datetime.now()
 
-        duration = ""
-
         user_id = str(member.id)
         vc_data = load_vc_data()
 
@@ -192,7 +189,7 @@ async def on_voice_state_update(member, before, after):
             save_vc_data(vc_data)  # เอาแค่ HH:MM:SS ตัด microseconds + save data
 
         embed2 = discord.Embed(
-            title=f"👋 ได้ออกจาก **{before.channel.name}**(🕒 อยู่ในห้อง **{duration}**)",
+            title=f"👋 ได้ออกจาก **{before.channel.name}**(🕒 อยู่ในห้อง **{spent_sec}**)",
             description=f"Machu -- {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ",
             color=discord.Color.red()
         )
