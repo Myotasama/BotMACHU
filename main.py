@@ -163,59 +163,58 @@ async def on_voice_state_update(member, before, after):
 
     # เข้าห้อง
     if before.channel is None and after.channel is not None:
-         vc_entry_time[member.id] = datetime.datetime.now()
-         embed2 = discord.Embed(
+        vc_entry_time[member.id] = datetime.datetime.now()
+        embed2 = discord.Embed(
             title=f"🎧 ได้เข้าห้อง **{after.channel.name}**",
-            description=f"Machu -- {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ",
+            description=f"Machu -- {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
             color=discord.Color.green()
-         )
-         embed2.set_author(
+        )
+        embed2.set_author(
             name=member.display_name,
-            icon_url=member.avatar.url if member.avatar else member.default_avatar.url)
-
-         await log_channel.send(embed=embed2)
+            icon_url=member.avatar.url if member.avatar else member.default_avatar.url
+        )
+        await log_channel.send(embed=embed2)
 
     # ออกจากห้อง
-     elif before.channel is not None and after.channel is None:
-          join_time = vc_entry_time.pop(member.id, None)
-          now = datetime.datetime.now()
+    elif before.channel is not None and after.channel is None:
+        join_time = vc_entry_time.pop(member.id, None)
+        now = datetime.datetime.now()
 
-          user_id = str(member.id)
-          vc_data = load_vc_data()
+        user_id = str(member.id)
+        vc_data = load_vc_data()
 
-          if join_time:
-              spent_sec = int((now - join_time).total_seconds())
-              formatted_duration = str(datetime.timedelta(seconds=spent_sec))  # ✅ Fix here
-              
-              vc_data[user_id] = vc_data.get(user_id, 0) + spent_sec
-              save_vc_data(vc_data)
-          else:
-              formatted_duration = "ไม่สามารถคำนวณได้"
-          embed2 = discord.Embed(
-              title=f"👋 ได้ออกจาก **{before.channel.name}** (🕒 อยู่ในห้อง **{formatted_duration}**)",  description=f"Machu -- {now.strftime('%Y-%m-%d %H:%M:%S')}",  color=discord.Color.red()
-          )
-         
-    embed2.set_author(
-        name=member.display_name,
-        icon_url=member.avatar.url if member.avatar else member.default_avatar.url
-    )
-    await log_channel.send(embed=embed2)
+        if join_time:
+            spent_sec = int((now - join_time).total_seconds())
+            formatted_duration = str(datetime.timedelta(seconds=spent_sec))
+            vc_data[user_id] = vc_data.get(user_id, 0) + spent_sec
+            save_vc_data(vc_data)
+        else:
+            formatted_duration = "ไม่สามารถคำนวณได้"
 
+        embed2 = discord.Embed(
+            title=f"👋 ได้ออกจาก **{before.channel.name}** (🕒 อยู่ในห้อง **{formatted_duration}**)",
+            description=f"Machu -- {now.strftime('%Y-%m-%d %H:%M:%S')}",
+            color=discord.Color.red()
+        )
+        embed2.set_author(
+            name=member.display_name,
+            icon_url=member.avatar.url if member.avatar else member.default_avatar.url
+        )
+        await log_channel.send(embed=embed2)
 
     # ย้ายห้อง
     elif before.channel != after.channel:
-        # อัปเดตเวลาย้ายห้อง
         vc_entry_time[member.id] = datetime.datetime.now()
         embed2 = discord.Embed(
             title=f"🔄 ย้ายห้องจาก  **{before.channel.name}** ไปยัง **{after.channel.name}**",
-            description=f"Machu -- {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ",
+            description=f"Machu -- {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
             color=discord.Color.blurple()
         )
         embed2.set_author(
             name=member.display_name,
-            icon_url=member.avatar.url if member.avatar else member.default_avatar.url)
+            icon_url=member.avatar.url if member.avatar else member.default_avatar.url
+        )
         await log_channel.send(embed=embed2)
-
 #vcstats
 @bot.tree.command(name="vcstats", description="ดูเวลาที่คุณใช้ใน VC ทั้งหมด")
 async def vcstats(interaction: discord.Interaction):
