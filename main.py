@@ -185,12 +185,15 @@ async def on_voice_state_update(member, before, after):
 
         if join_time:
             spent_sec = int((now - join_time).total_seconds())
-            vc_data[user_id] = vc_data.get(user_id, 0) + spent_sec
-            save_vc_data(vc_data)  # เอาแค่ HH:MM:SS ตัด microseconds + save data
+            formatted_duration = str(datetime.timedelta(seconds=spent_sec))  # 🔁 แปลงเป็น 00:00:00
 
+            vc_data[user_id] = vc_data.get(user_id, 0) + spent_sec
+            save_vc_data(vc_data)
+        else:
+            formatted_duration = "ไม่สามารถคำนวณได้"
         embed2 = discord.Embed(
-            title=f"👋 ได้ออกจาก **{before.channel.name}**(🕒 อยู่ในห้อง **{spent_sec}**)",
-            description=f"Machu -- {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ",
+            title=f"👋 ได้ออกจาก **{before.channel.name}** (🕒 อยู่ในห้อง **{formatted_duration}**)",
+            description=f"Machu -- {now.strftime('%Y-%m-%d %H:%M:%S')}",
             color=discord.Color.red()
         )
         embed2.set_author(
