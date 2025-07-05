@@ -1,2 +1,2 @@
 # BotMACHU
-study
+Bot machu is server management and studyrecording 
